@@ -1,21 +1,44 @@
 import axios from 'axios';
 
 export default async function(req, res) {
-    const formData = JSON.parse(req.payload);
-    const tableId = 'mvyihi8x26nven2'; // table contact
+   // console.log('Received request:', req);
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', req.body);
+    console.log('Request payload:', req.payload);
 
-    const NOCODB_API = process.env.NOCODB_API;
+    let formData;
 
-    // Подключение к NocoDB и вставка данных
     try {
-        await axios.post('https://app.nocodb.com/api/v2/tables/' + tableId + '/records', formData, {
+        if (req.body) {
+            formData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        } else if (req.payload) {
+            formData = typeof req.payload === 'string' ? JSON.parse(req.payload) : req.payload;
+        } else if (req.headers['content-type'] === 'application/json') {
+            formData = JSON.parse(await new Promise(resolve => {
+                let body = '';
+                req.on('data', chunk => body += chunk.toString());
+                req.on('end', () => resolve(body));
+            }));
+        } else {
+            throw new Error('No data received or unsupported content type');
+        }
+
+        console.log('Parsed formData:', formData);
+
+        const tableId = 'mvyihi8x26nven2';
+        const NOCODB_API = process.env.NOCODB_API;
+
+        const response = await axios.post('https://app.nocodb.com/api/v2/tables/' + tableId + '/records', formData, {
             headers: {
                 'xc-token': NOCODB_API
             }
         });
+
+        console.log('NocoDB response:', response.data);
+
         res.json({ success: true, message: 'Данные успешно записаны в NocoDB' });
     } catch (error) {
-        console.error('Ошибка при записи в NocoDB:', error);
-        res.json({ success: false, message: 'Ошибка при записи данных' });
+        console.error('Ошибка:', error.message);
+        res.json({ success: false, message: 'Ошибка при обработке или записи данных: ' + error.message });
     }
 }
