@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export default async function({req, res, log, error}) {
-   // console.log('Received request:', req);
-    console.log('Request headers:', req.headers);
+
+    //console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
-    console.log('Request payload:', req.payload);
+    console.log('typeof req.body:', typeof req.body);
 
     let formData;
-    res.json({ success: true, message: 'finish' });
+    return res.json({ success: true, message: 'finish' });
 /*
     try {
         if (req.body) {
