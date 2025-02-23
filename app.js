@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-export default async function(req, res) {
+export default async function({req, res, log, error}) {
    // console.log('Received request:', req);
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
     console.log('Request payload:', req.payload);
 
     let formData;
-
+    res.json({ success: true, message: 'finish' });
+/*
     try {
         if (req.body) {
             formData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
@@ -41,4 +42,6 @@ export default async function(req, res) {
         console.error('Ошибка:', error.message);
         res.json({ success: false, message: 'Ошибка при обработке или записи данных: ' + error.message });
     }
+
+ */
 }
