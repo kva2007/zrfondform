@@ -11,7 +11,7 @@ export default async function({req, res, log, error}) {
 
     log(req.path);
 
-    if (req.path === 'test'){
+    if (req.path === '/test'){
         return res.json({ success: true, message: 'Test OK' },200,{
             'Access-Control-Allow-Origin': '*',
         });
