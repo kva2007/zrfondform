@@ -9,6 +9,14 @@ export default async function({req, res, log, error}) {
         })
     }
 
+    log(req.path);
+
+    if (req.path === 'test'){
+        return res.json({ success: true, message: 'Test OK' },200,{
+            'Access-Control-Allow-Origin': '*',
+        });
+    }
+
     const tableId = 'mvyihi8x26nven2';
     const NOCODB_API = process.env.NOCODB_API;
     const formData = req.body;
@@ -20,14 +28,13 @@ export default async function({req, res, log, error}) {
             }
         });
 
-       // console.log('NocoDB response:', response.data);
 
         return res.json({ success: true, message: 'Данные успешно записаны в NocoDB' },200,{
             'Access-Control-Allow-Origin': '*',
         });
-    } catch (error) {
-        console.error('Ошибка:', error.message);
-        return res.json({ success: false, message: 'Ошибка при обработке или записи данных: ' + error.message },200,{
+    } catch (err) {
+        error('Ошибка:', err.message);
+        return res.json({ success: false, message: 'Ошибка при обработке или записи данных: ' + err.message },200,{
             'Access-Control-Allow-Origin': '*',
         });
     }
